@@ -1,23 +1,45 @@
+let countdownTime;  // Make countdownTime global to handle start/stop properly
+
 document.getElementById("btn").addEventListener("click", function() {
+    const btn = document.getElementById("btn");
     const targetDateInput = document.getElementById("datetime");
+
+    // Check if the button is currently in "Start Countdown" mode or "Start Again" mode
+    if (btn.textContent === "Start Countdown") {
+        startCountdown(targetDateInput);
+    } else if (btn.textContent === "Start Again") {
+        resetCountdown();  // Reset countdown when "Start Again" is clicked
+    }
+});
+
+function startCountdown(targetDateInput) {
     const targetDate = new Date(targetDateInput.value);
-    
-    if (isNaN(targetDate)) {
+
+    // Validate date input
+    if (isNaN(targetDate.getTime())) {
         alert("Please set a valid date and time.");
         return;
     }
 
-    let countdownTime;
+    // If there's an existing countdown, clear it first
+    if (countdownTime) {
+        clearInterval(countdownTime);
+    }
+
+    // Disable the input and update the button
+    targetDateInput.disabled = true;
+    document.getElementById("btn").textContent = "Counting Down...";
+    document.getElementById("btn").disabled = true;
+
     function updateCount() {
         const now = new Date().getTime();
         const timeRemaining = targetDate.getTime() - now;
 
-        if (timeRemaining < 0) {
+        if (timeRemaining <= 0) {
             clearInterval(countdownTime);
             document.getElementById('Display').innerHTML = "<h2>Countdown Ended!!</h2>";
             document.getElementById("btn").textContent = "Start Again";
             document.getElementById("btn").disabled = false;
-            targetDateInput.disabled = false; // Allow resetting the date-time input
             return;
         }
 
@@ -32,39 +54,33 @@ document.getElementById("btn").addEventListener("click", function() {
         document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
     }
 
-    // If the countdown ends, and the user clicks the button again, restart the countdown
-    if (countdownTime) {
-        clearInterval(countdownTime);
-    }
-
-    document.getElementById("btn").disabled = true;
-    document.getElementById("btn").textContent = "Counting Down...";
-    targetDateInput.disabled = true; // Disable the date-time input while counting down
-    updateCount();
+    updateCount();  // Run once initially to avoid 1-second delay
     countdownTime = setInterval(updateCount, 1000);
-});
+}
 
-// Reset the countdown when the button is clicked to "Start Again"
-document.getElementById("btn").addEventListener("click", function() {
-    if (this.textContent === "Start Again") {
-        document.getElementById('Display').innerHTML = `
-            <div class="time-box">
-                <span id="days">00</span>
-                <p>Days</p>
-            </div>
-            <div class="time-box">
-                <span id="hours">00</span>
-                <p>Hours</p>
-            </div>
-            <div class="time-box">
-                <span id="minutes">00</span>
-                <p>Minutes</p>
-            </div>
-            <div class="time-box">
-                <span id="seconds">00</span>
-                <p>Seconds</p>
-            </div>
-        `;
-        document.getElementById("btn").textContent = "Start Countdown"; // Reset button text
-    }
-});
+function resetCountdown() {
+    // Reset the display
+    document.getElementById('Display').innerHTML = `
+        <div class="time-box">
+            <span id="days">00</span>
+            <p>Days</p>
+        </div>
+        <div class="time-box">
+            <span id="hours">00</span>
+            <p>Hours</p>
+        </div>
+        <div class="time-box">
+            <span id="minutes">00</span>
+            <p>Minutes</p>
+        </div>
+        <div class="time-box">
+            <span id="seconds">00</span>
+            <p>Seconds</p>
+        </div>
+    `;
+
+    // Re-enable the date-time input and update the button
+    document.getElementById("datetime").disabled = false;
+    document.getElementById("btn").textContent = "Start Countdown";
+    document.getElementById("btn").disabled = false;
+}
