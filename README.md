@@ -3,7 +3,7 @@
 A responsive Countdown Timer that allows users to set a target date and time, providing real-time countdown updates.
 
 ## Live Demo
-You can try out the Countdown Timer live [here](https://66ee66afae905ef95b9e336b--countdowntimer-application.netlify.app/).
+You can try out the Countdown Timer live [here](https://countdowntimer-application.netlify.app/).
 
 
 
